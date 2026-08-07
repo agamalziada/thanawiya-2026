@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>منحنى التوزيع الطبيعي لدرجات الطلاب الناجحين</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--blue:#378ADD;--coral:#D85A30;--teal:#1D9E75;--amber:#BA7517;--gray:#888780;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Tajawal",sans-serif;background:#fff;color:#2c2c2a;direction:rtl;}
+  #root{padding:clamp(12px,3vw,20px);}
+  .hdr{border-right:3px solid #378ADD;padding-right:10px;margin-bottom:10px;}
+  .tag{font-size:clamp(9px,2vw,10px);font-weight:700;letter-spacing:.06em;color:var(--gray);margin-bottom:2px;}
+  .title{font-size:clamp(13px,3.5vw,15px);font-weight:700;line-height:1.4;margin-bottom:2px;}
+  .subtitle{font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;}
+  .callout{background:#f1efe8;border-right:3px solid #378ADD;padding:8px 11px;font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;line-height:1.6;margin:9px 0;font-style:italic;}
+  .source{font-size:clamp(9px,2vw,10px);color:var(--gray);margin-top:10px;line-height:1.4;text-align:right;}
+  @media(prefers-color-scheme:dark){
+    body{background:#1a1a18;color:#d3d1c7;}
+    .callout{background:#2c2c2a;color:#b4b2a9;}
+    .subtitle,.source{color:#b4b2a9;}
+  }
+</style>
+</head>
+<body>
+<div id="root">
+
+  <div class="hdr">
+    <p class="tag">زاوية ثالثة · إنفوجرافيك ⑧</p>
+    <p class="title">منحنى التوزيع الطبيعي لدرجات الطلاب الناجحين (50%–100%)</p>
+    <p class="subtitle">أعداد الطلاب لكل شريحة — إجمالي الناجحين: 624,332 طالب</p>
+  </div>
+
+  <div class="callout">"نصف الناجحين تقريبًا تمركزت درجاتهم بين 60 و70% — ذروة التوزيع تقع في شريحة 60–65%"</div>
+
+  <!-- بطاقات إحصائية -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+    <div style="flex:1;min-width:min(100px,44%);background:#eef4fb;border-radius:7px;padding:clamp(8px,2.5vw,11px)">
+      <p style="font-size:clamp(9px,2.2vw,10px);color:#5f5e5a;margin-bottom:2px">شريحة الذروة</p>
+      <p style="font-size:clamp(14px,4vw,18px);font-weight:800;color:#378ADD">60%–65%</p>
+      <p style="font-size:clamp(9px,2vw,10px);color:#888780;margin-top:1px">88,300 طالب</p>
+    </div>
+    <div style="flex:1;min-width:min(100px,44%);background:#edf7f3;border-radius:7px;padding:clamp(8px,2.5vw,11px)">
+      <p style="font-size:clamp(9px,2.2vw,10px);color:#5f5e5a;margin-bottom:2px">فوق 90%</p>
+      <p style="font-size:clamp(14px,4vw,18px);font-weight:800;color:#1D9E75">42,704</p>
+      <p style="font-size:clamp(9px,2vw,10px);color:#888780;margin-top:1px">6.8% من الناجحين</p>
+    </div>
+    <div style="flex:1;min-width:min(100px,44%);background:#faece7;border-radius:7px;padding:clamp(8px,2.5vw,11px)">
+      <p style="font-size:clamp(9px,2.2vw,10px);color:#5f5e5a;margin-bottom:2px">50%–60% (الحد الأدنى)</p>
+      <p style="font-size:clamp(14px,4vw,18px);font-weight:800;color:#D85A30">128,010</p>
+      <p style="font-size:clamp(9px,2vw,10px);color:#888780;margin-top:1px">20.5% من الناجحين</p>
+    </div>
+  </div>
+
+  <!-- الرسم البياني -->
+  <div style="position:relative;width:100%;height:clamp(210px,55vw,260px)"><canvas id="c"></canvas></div>
+
+  <p class="source">المصدر: ملف نتيجة الثانوية العامة (xlsx) / وزارة التربية والتعليم</p>
+</div>
+
+<script>
+(function(){
+  var dk=matchMedia("(prefers-color-scheme:dark)").matches;
+  var tc=dk?"#b4b2a9":"#5f5e5a",gc=dk?"rgba(255,255,255,.08)":"rgba(0,0,0,.07)";
+  var blue=dk?"#85B7EB":"#378ADD",blueA=dk?"rgba(133,183,235,0.15)":"rgba(55,138,221,0.12)";
+  var coral=dk?"#F0997B":"#D85A30",teal=dk?"#5DCAA5":"#1D9E75";
+
+  var labels=["50–55%","55–60%","60–65%","65–70%","70–75%","75–80%","80–85%","85–90%","90–95%","95–100%"];
+  var data=[48326,79684,88300,87749,83086,76319,66334,51830,32383,10321];
+
+  // Color gradient: peak band gets blue, lower gets coral, top gets teal
+  var barColors=data.map(function(v,i){
+    if(i===2||i===3) return blue;       // الذروة
+    if(i>=8)         return teal;       // المتفوقون
+    if(i<=1)         return coral;      // الحد الأدنى
+    return dk?"#7FA8CC":"#6BAED6";     // المنتصف
+  });
+
+  new Chart(document.getElementById("c"),{
+    type:"bar",
+    data:{
+      labels:labels,
+      datasets:[
+        {
+          type:"bar",
+          label:"عدد الطلاب",
+          data:data,
+          backgroundColor:barColors,
+          borderWidth:0,
+          borderRadius:4,
+          order:2
+        },
+        {
+          type:"line",
+          label:"منحنى التوزيع",
+          data:data,
+          borderColor:blue,
+          borderWidth:2,
+          pointBackgroundColor:blue,
+          pointRadius:3,
+          pointHoverRadius:5,
+          tension:0.4,
+          fill:true,
+          backgroundColor:blueA,
+          order:1
+        }
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      animation:{duration:1000,easing:"easeOutQuart",delay:function(c){return c.dataIndex*60;}},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:dk?"#2c2c2a":"#fff",
+          borderColor:dk?"rgba(255,255,255,.1)":"rgba(0,0,0,.08)",
+          borderWidth:1,titleColor:dk?"#d3d1c7":"#2c2c2a",
+          bodyColor:tc,padding:10,
+          titleFont:{family:"Tajawal"},bodyFont:{family:"Tajawal"},
+          mode:"index",intersect:false,
+          filter:function(item){return item.datasetIndex===0;},
+          callbacks:{
+            title:function(items){return "شريحة "+items[0].label;},
+            label:function(c){
+              var pct=(c.raw/624332*100).toFixed(1);
+              return c.raw.toLocaleString("ar-EG")+" طالب ("+pct+"% من الناجحين)";
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          ticks:{color:tc,font:{size:clamp(8,9,10),family:"Tajawal"},maxRotation:0},
+          grid:{display:false},border:{color:gc}
+        },
+        y:{
+          ticks:{
+            color:tc,font:{size:10,family:"Tajawal"},
+            callback:function(v){return (v/1000).toFixed(0)+"k";}
+          },
+          grid:{color:gc},border:{display:false}
+        }
+      }
+    }
+  });
+
+  function clamp(a,b,c){return Math.min(Math.max(a,b),c);}
+
+  function notify(){
+    var h=document.getElementById("root").offsetHeight;
+    window.parent.postMessage({type:"chartResize",height:h},"*");
+  }
+  setTimeout(notify,1400);
+  window.addEventListener("resize",notify);
+  try{new ResizeObserver(function(){setTimeout(notify,80);}).observe(document.body);}catch(e){}
+})();
+</script>
+</body>
+</html>
