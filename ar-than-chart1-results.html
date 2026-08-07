@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>توزيع حالات طلاب الثانوية العامة 2025/2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--blue:#378ADD;--coral:#D85A30;--teal:#1D9E75;--amber:#BA7517;--gray:#888780;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Tajawal",sans-serif;background:#fff;color:#2c2c2a;direction:rtl;}
+  #root{padding:clamp(12px,3vw,20px);}
+  .hdr{border-right:3px solid #378ADD;padding-right:10px;margin-bottom:10px;}
+  .tag{font-size:clamp(9px,2vw,10px);font-weight:700;letter-spacing:.06em;color:var(--gray);margin-bottom:2px;}
+  .title{font-size:clamp(13px,3.5vw,15px);font-weight:700;line-height:1.4;margin-bottom:2px;}
+  .subtitle{font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;}
+  .callout{background:#f1efe8;border-right:3px solid #378ADD;padding:8px 11px;font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;line-height:1.6;margin:9px 0;font-style:italic;}
+  .source{font-size:clamp(9px,2vw,10px);color:var(--gray);margin-top:10px;line-height:1.4;text-align:right;}
+  .flex-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .card{flex:1;min-width:min(100px,44%);border-radius:8px;padding:clamp(9px,2.5vw,12px) clamp(10px,3vw,13px);}
+  @media(prefers-color-scheme:dark){
+    body{background:#1a1a18;color:#d3d1c7;}
+    .callout{background:#2c2c2a;color:#b4b2a9;}
+    .subtitle,.source{color:#b4b2a9;}
+  }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="hdr">
+    <p class="tag">زاوية ثالثة · إنفوجرافيك ① من ⑦</p>
+    <p class="title">توزيع حالات طلاب الثانوية العامة 2025/2026</p>
+    <p class="subtitle">إجمالي الطلاب: 889,010 طالب</p>
+  </div>
+  <div class="callout">"ثلاثة من كل عشرة طلاب لم ينجحوا — بين دور ثانٍ وراسب وغائب"</div>
+  
+<div style="display:flex;align-items:center;gap:clamp(12px,4vw,20px);flex-wrap:wrap">
+  <div style="position:relative;width:clamp(150px,40vw,175px);height:clamp(150px,40vw,175px);flex-shrink:0"><canvas id="c"></canvas></div>
+  <div id="leg" style="display:flex;flex-direction:column;gap:9px;flex:1;min-width:min(150px,100%)"></div>
+</div>
+<script>
+(function(){
+  var dk=matchMedia("(prefers-color-scheme:dark)").matches;
+  var teal=dk?"#5DCAA5":"#1D9E75",coral=dk?"#F0997B":"#D85A30",
+      amber=dk?"#FAC775":"#BA7517",gray=dk?"#B4B2A9":"#888780";
+  var labels=["ناجح","دور ثانٍ","راسب","غائب كليًا"];
+  var values=[624332,196297,63929,4452];
+  var pcts=["70.2%","22.1%","7.2%","0.5%"];
+  var colors=[teal,amber,coral,gray];
+  new Chart(document.getElementById("c"),{
+    type:"doughnut",
+    data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderWidth:3,borderColor:dk?"#1a1a18":"#fff",hoverOffset:6}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      cutout:"60%",
+      animation:{animateRotate:true,animateScale:true,duration:1000,easing:"easeOutQuart"},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:dk?"#2c2c2a":"#fff",
+          borderColor:dk?"rgba(255,255,255,.1)":"rgba(0,0,0,.08)",
+          borderWidth:1,titleColor:dk?"#d3d1c7":"#2c2c2a",
+          bodyColor:dk?"#b4b2a9":"#5f5e5a",padding:10,
+          titleFont:{family:"Tajawal"},bodyFont:{family:"Tajawal"},
+          callbacks:{label:function(c){return " "+c.label+": "+c.raw.toLocaleString("ar-EG")+" طالب ("+pcts[c.dataIndex]+")";}}
+        }
+      }
+    }
+  });
+  var leg=document.getElementById("leg");
+  labels.forEach(function(l,i){
+    leg.innerHTML+="<div style='display:flex;align-items:center;gap:8px'>"
+      +"<span style='width:10px;height:10px;border-radius:2px;background:"+colors[i]+";flex-shrink:0'></span>"
+      +"<div style='flex:1'><span style='font-size:clamp(10px,2.5vw,11px);color:#5f5e5a'>"+l+"</span></div>"
+      +"<div style='text-align:left'><span style='font-size:clamp(11px,2.8vw,13px);font-weight:700;color:"+colors[i]+"'>"+pcts[i]+"</span>"
+      +"<br><span style='font-size:clamp(9px,2vw,10px);color:#888780'>"+values[i].toLocaleString("ar-EG")+"</span></div></div>";
+  });
+})();
+</script>
+  <p class="source">المصدر: ملف نتيجة الثانوية العامة (xlsx) / وزارة التربية والتعليم</p>
+</div>
+<script>
+(function(){
+  function notify(){
+    var h=document.getElementById("root").offsetHeight;
+    window.parent.postMessage({type:"chartResize",height:h},"*");
+  }
+  setTimeout(notify,1400);
+  window.addEventListener("resize",notify);
+  try{new ResizeObserver(function(){setTimeout(notify,80);}).observe(document.body);}catch(e){}
+})();
+</script>
+</body></html>
