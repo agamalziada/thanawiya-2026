@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Score bands of passing students</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{--blue:#378ADD;--coral:#D85A30;--teal:#1D9E75;--amber:#BA7517;--gray:#888780;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Arial",sans-serif;background:#fff;color:#2c2c2a;direction:ltr;}
+  #root{padding:clamp(12px,3vw,20px);}
+  .hdr{border-left:3px solid #BA7517;padding-left:10px;margin-bottom:10px;}
+  .tag{font-size:clamp(9px,2vw,10px);font-weight:700;letter-spacing:.06em;color:var(--gray);margin-bottom:2px;}
+  .title{font-size:clamp(13px,3.5vw,15px);font-weight:700;line-height:1.4;margin-bottom:2px;}
+  .subtitle{font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;}
+  .callout{background:#f1efe8;border-left:3px solid #BA7517;padding:8px 11px;font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;line-height:1.6;margin:9px 0;font-style:italic;}
+  .source{font-size:clamp(9px,2vw,10px);color:var(--gray);margin-top:10px;line-height:1.4;text-align:left;}
+  .flex-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .card{flex:1;min-width:min(100px,44%);border-radius:8px;padding:clamp(9px,2.5vw,12px) clamp(10px,3vw,13px);}
+  @media(prefers-color-scheme:dark){
+    body{background:#1a1a18;color:#d3d1c7;}
+    .callout{background:#2c2c2a;color:#b4b2a9;}
+    .subtitle,.source{color:#b4b2a9;}
+  }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="hdr">
+    <p class="tag">Zawia3 · Infographic ③ of ⑦</p>
+    <p class="title">Score bands of passing students</p>
+    <p class="subtitle">Out of 624,332 passing students</p>
+  </div>
+  <div class="callout">"Nearly half of passing students received low scores between 50% and 70%"</div>
+  
+<div class="flex-cards" style="margin-bottom:14px">
+  <div class="card" style="background:#edf7f3;text-align:center">
+    <p style="font-size:clamp(9px,2.2vw,10px);color:#5f5e5a;margin-bottom:3px">80% – 100%</p>
+    <p style="font-size:clamp(18px,5vw,24px);font-weight:800;color:#1D9E75">26%</p>
+    <p style="font-size:clamp(9px,2vw,10px);color:#0F6E56;margin-top:1px">160,868 students</p>
+  </div>
+  <div class="card" style="background:#fdf6e8;text-align:center">
+    <p style="font-size:clamp(9px,2.2vw,10px);color:#5f5e5a;margin-bottom:3px">70% – 80%</p>
+    <p style="font-size:clamp(18px,5vw,24px);font-weight:800;color:#BA7517">25.5%</p>
+    <p style="font-size:clamp(9px,2vw,10px);color:#888780;margin-top:1px">159,405 students</p>
+  </div>
+  <div class="card" style="background:#faece7;text-align:center">
+    <p style="font-size:clamp(9px,2.2vw,10px);color:#5f5e5a;margin-bottom:3px">50% – 70%</p>
+    <p style="font-size:clamp(18px,5vw,24px);font-weight:800;color:#D85A30">48.7%</p>
+    <p style="font-size:clamp(9px,2vw,10px);color:#993C1D;margin-top:1px">304,059 students</p>
+  </div>
+</div>
+<div style="position:relative;width:100%;height:clamp(160px,42vw,185px)"><canvas id="c"></canvas></div>
+<script>
+(function(){
+  var dk=matchMedia("(prefers-color-scheme:dark)").matches;
+  var tc=dk?"#b4b2a9":"#5f5e5a",gc=dk?"rgba(255,255,255,.08)":"rgba(0,0,0,.07)";
+  var teal=dk?"#5DCAA5":"#1D9E75",amber=dk?"#FAC775":"#BA7517",coral=dk?"#F0997B":"#D85A30";
+  new Chart(document.getElementById("c"),{
+    type:"bar",
+    data:{
+      labels:["80%–100%","70%–80%","50%–70%"],
+      datasets:[{data:[160868,159405,304059],backgroundColor:[teal,amber,coral],borderWidth:0,borderRadius:5}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      animation:{duration:1000,easing:"easeOutQuart",delay:function(c){return c.dataIndex*100;}},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:dk?"#2c2c2a":"#fff",
+          borderColor:dk?"rgba(255,255,255,.1)":"rgba(0,0,0,.08)",
+          borderWidth:1,titleColor:dk?"#d3d1c7":"#2c2c2a",bodyColor:tc,padding:10,
+          titleFont:{family:"Arial"},bodyFont:{family:"Arial"},
+          callbacks:{label:function(c){return c.raw.toLocaleString("en-GB")+" students";}}
+        }
+      },
+      scales:{
+        x:{ticks:{color:tc,font:{size:10,family:"Arial"}},grid:{display:false},border:{color:gc}},
+        y:{ticks:{color:tc,font:{size:10,family:"Arial"},callback:function(v){return (v/1000).toFixed(0)+"k";}},grid:{color:gc},border:{display:false}}
+      }
+    }
+  });
+})();
+</script>
+  <p class="source">Source: Thanawiya Amma results spreadsheet (xlsx)</p>
+</div>
+<script>
+(function(){
+  function notify(){
+    var h=document.getElementById("root").offsetHeight;
+    window.parent.postMessage({type:"chartResize",height:h},"*");
+  }
+  setTimeout(notify,1400);
+  window.addEventListener("resize",notify);
+  try{new ResizeObserver(function(){setTimeout(notify,80);}).observe(document.body);}catch(e){}
+})();
+</script>
+</body></html>

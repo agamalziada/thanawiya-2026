@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pass rates in the three Thanawiya Amma streams</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{--blue:#378ADD;--coral:#D85A30;--teal:#1D9E75;--amber:#BA7517;--gray:#888780;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Arial",sans-serif;background:#fff;color:#2c2c2a;direction:ltr;}
+  #root{padding:clamp(12px,3vw,20px);}
+  .hdr{border-left:3px solid #378ADD;padding-left:10px;margin-bottom:10px;}
+  .tag{font-size:clamp(9px,2vw,10px);font-weight:700;letter-spacing:.06em;color:var(--gray);margin-bottom:2px;}
+  .title{font-size:clamp(13px,3.5vw,15px);font-weight:700;line-height:1.4;margin-bottom:2px;}
+  .subtitle{font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;}
+  .callout{background:#f1efe8;border-left:3px solid #378ADD;padding:8px 11px;font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;line-height:1.6;margin:9px 0;font-style:italic;}
+  .source{font-size:clamp(9px,2vw,10px);color:var(--gray);margin-top:10px;line-height:1.4;text-align:left;}
+  .flex-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .card{flex:1;min-width:min(100px,44%);border-radius:8px;padding:clamp(9px,2.5vw,12px) clamp(10px,3vw,13px);}
+  @media(prefers-color-scheme:dark){
+    body{background:#1a1a18;color:#d3d1c7;}
+    .callout{background:#2c2c2a;color:#b4b2a9;}
+    .subtitle,.source{color:#b4b2a9;}
+  }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="hdr">
+    <p class="tag">Zawia3 · Infographic ② of ⑦</p>
+    <p class="title">Pass rates in the three Thanawiya Amma streams</p>
+    <p class="subtitle">Mathematics has the highest pass rate; humanities the lowest, 12 points behind</p>
+  </div>
+  <div class="callout">"Mathematics 81.6%, science 75.4%, humanities 69.2%, despite mathematics attracting the fewest students"</div>
+  
+<div style="position:relative;width:100%;height:clamp(190px,48vw,220px)"><canvas id="c"></canvas></div>
+<script>
+(function(){
+  var dk=matchMedia("(prefers-color-scheme:dark)").matches;
+  var tc=dk?"#b4b2a9":"#5f5e5a",gc=dk?"rgba(255,255,255,.08)":"rgba(0,0,0,.07)";
+  var blue=dk?"#85B7EB":"#378ADD",teal=dk?"#5DCAA5":"#1D9E75",amber=dk?"#FAC775":"#BA7517";
+  new Chart(document.getElementById("c"),{
+    type:"bar",
+    data:{
+      labels:["Mathematics","Science","Humanities"],
+      datasets:[{
+        data:[81.6,75.4,69.2],
+        backgroundColor:[blue,teal,amber],
+        borderWidth:0,borderRadius:6
+      }]
+    },
+    options:{
+      indexAxis:"y",
+      responsive:true,maintainAspectRatio:false,
+      animation:{duration:1000,easing:"easeOutQuart",delay:function(c){return c.dataIndex*120;}},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:dk?"#2c2c2a":"#fff",
+          borderColor:dk?"rgba(255,255,255,.1)":"rgba(0,0,0,.08)",
+          borderWidth:1,titleColor:dk?"#d3d1c7":"#2c2c2a",bodyColor:tc,padding:10,
+          titleFont:{family:"Arial"},bodyFont:{family:"Arial"},
+          callbacks:{
+            label:function(c){
+              var counts=["113,651","382,720","123,943"];
+              return "Pass rate: "+c.raw+"% · Students passing: "+counts[c.dataIndex]+" students";
+            }
+          }
+        }
+      },
+      scales:{
+        x:{min:60,max:90,ticks:{color:tc,font:{size:10,family:"Arial"},callback:function(v){return v+"%";}},grid:{color:gc},border:{display:false}},
+        y:{position:"left",ticks:{color:tc,font:{size:clamp(10,11,13),family:"Arial"}},grid:{display:false},border:{display:false}}
+      }
+    }
+  });
+  function clamp(a,b,c){return Math.min(Math.max(a,b),c);}
+})();
+</script>
+  <p class="source">Source: Ministry of Education statement</p>
+</div>
+<script>
+(function(){
+  function notify(){
+    var h=document.getElementById("root").offsetHeight;
+    window.parent.postMessage({type:"chartResize",height:h},"*");
+  }
+  setTimeout(notify,1400);
+  window.addEventListener("resize",notify);
+  try{new ResizeObserver(function(){setTimeout(notify,80);}).observe(document.body);}catch(e){}
+})();
+</script>
+</body></html>

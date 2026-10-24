@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Students facing resits despite scores above 90%</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{--blue:#378ADD;--coral:#D85A30;--teal:#1D9E75;--amber:#BA7517;--gray:#888780;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Arial",sans-serif;background:#fff;color:#2c2c2a;direction:ltr;}
+  #root{padding:clamp(12px,3vw,20px);}
+  .hdr{border-left:3px solid #D85A30;padding-left:10px;margin-bottom:10px;}
+  .tag{font-size:clamp(9px,2vw,10px);font-weight:700;letter-spacing:.06em;color:var(--gray);margin-bottom:2px;}
+  .title{font-size:clamp(13px,3.5vw,15px);font-weight:700;line-height:1.4;margin-bottom:2px;}
+  .subtitle{font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;}
+  .callout{background:#f1efe8;border-left:3px solid #D85A30;padding:8px 11px;font-size:clamp(11px,2.5vw,12px);color:#5f5e5a;line-height:1.6;margin:9px 0;font-style:italic;}
+  .source{font-size:clamp(9px,2vw,10px);color:var(--gray);margin-top:10px;line-height:1.4;text-align:left;}
+  .flex-cards{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .card{flex:1;min-width:min(100px,44%);border-radius:8px;padding:clamp(9px,2.5vw,12px) clamp(10px,3vw,13px);}
+  @media(prefers-color-scheme:dark){
+    body{background:#1a1a18;color:#d3d1c7;}
+    .callout{background:#2c2c2a;color:#b4b2a9;}
+    .subtitle,.source{color:#b4b2a9;}
+  }
+</style>
+</head>
+<body>
+<div id="root">
+  <div class="hdr">
+    <p class="tag">Zawia3 · Infographic ⑦ of ⑦</p>
+    <p class="title">Students facing resits despite scores above 90%</p>
+    <p class="subtitle">Failing one subject erases achievement in the others</p>
+  </div>
+  <div class="callout">"1,200 students face resits despite total scores above 90%; failing one subject cancels out genuine achievement"</div>
+  
+<div style="text-align:center;background:#faece7;border-radius:10px;padding:clamp(14px,4vw,20px);margin-bottom:14px">
+  <p style="font-size:clamp(10px,2.5vw,11px);color:#5f5e5a;margin-bottom:5px">Students facing resits who scored 90% to 99%</p>
+  <div id="v" style="font-size:clamp(38px,10vw,52px);font-weight:800;color:#D85A30;line-height:1">0</div>
+  <p style="font-size:clamp(13px,3.5vw,15px);font-weight:700;color:#D85A30;margin-top:4px">students</p>
+</div>
+<div class="flex-cards" style="margin-bottom:12px">
+  <div class="card" style="background:#faece7">
+    <p style="font-size:clamp(9px,2.2vw,10px);color:#993C1D;margin-bottom:2px">Their actual scores</p>
+    <p style="font-size:clamp(16px,4.5vw,20px);font-weight:800;color:#D85A30">288–316 points</p>
+    <p style="font-size:clamp(9px,2vw,10px);color:#888780;margin-top:1px">equivalent to 90% to 99%</p>
+  </div>
+  <div class="card" style="background:#f1efe8">
+    <p style="font-size:clamp(9px,2.2vw,10px);color:#5f5e5a;margin-bottom:2px">Highest score among failed students</p>
+    <p style="font-size:clamp(16px,4.5vw,20px);font-weight:800;color:#888780">286.5 points</p>
+    <p style="font-size:clamp(9px,2vw,10px);color:#888780;margin-top:1px">89.5%: officially failed</p>
+  </div>
+</div>
+<div style="background:#2c2c2a;border-radius:8px;padding:clamp(10px,3vw,13px)">
+  <p style="font-size:clamp(9px,2vw,10px);font-weight:700;letter-spacing:.08em;color:#D85A30;margin-bottom:7px">⚠ Visual contrast: resit status versus actual score</p>
+  <div style="height:12px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-bottom:5px">
+    <div id="prog" style="height:100%;width:0;background:#D85A30;border-radius:3px;transition:width 1.3s ease"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between">
+    <span style="font-size:clamp(9px,2vw,10px);color:rgba(255,255,255,.4)">0%</span>
+    <span style="font-size:clamp(9px,2vw,10px);color:#D85A30;font-weight:700">90–99%: scores of 1,200 students facing resits</span>
+    <span style="font-size:clamp(9px,2vw,10px);color:rgba(255,255,255,.4)">100%</span>
+  </div>
+</div>
+<script>
+(function(){
+  document.getElementById("prog").style.width="94%";
+  var s=null;
+  function cu(ts){
+    if(!s)s=ts;
+    var p=Math.min((ts-s)/900,1),e=1-Math.pow(1-p,3);
+    document.getElementById("v").textContent=Math.round(e*1200).toLocaleString("en-GB");
+    if(p<1)requestAnimationFrame(cu);
+    else document.getElementById("v").textContent="1,200";
+  }
+  setTimeout(function(){requestAnimationFrame(cu);},100);
+})();
+</script>
+  <p class="source">Source: Thanawiya Amma results spreadsheet (xlsx)</p>
+</div>
+<script>
+(function(){
+  function notify(){
+    var h=document.getElementById("root").offsetHeight;
+    window.parent.postMessage({type:"chartResize",height:h},"*");
+  }
+  setTimeout(notify,1400);
+  window.addEventListener("resize",notify);
+  try{new ResizeObserver(function(){setTimeout(notify,80);}).observe(document.body);}catch(e){}
+})();
+</script>
+</body></html>
